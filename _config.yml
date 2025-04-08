@@ -5,4 +5,4 @@ plugins:
 gem "github-pages", group: :jekyll_plugins
 
 title: Quick Fix or Healthy Mix?
-description: How does the cooking time of healthy recipes, defined by the lowest fat-to-calorie ratio, compare to that of unhealthy recipes?
+description: How does the cooking time of healthy recipes compare to that of unhealthy recipes?
