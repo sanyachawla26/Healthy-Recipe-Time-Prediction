@@ -1,22 +1,32 @@
 # Quick Fix or Healthy Mix?
+By: Carolina Mondragon and Sanya Chawla
 ## Introduction
-Everyone gets busy at times, and for some, it’s all the time. Unconsciously, that drives our food choices, often leading us to opt for quicker, less healthy meals. In this analysis, we explore how cooking times differ between healthy and unhealthy recipes. While there are many ways to define "healthy," for this project, we define it based on the calorie-to-fat ratio—the lower the ratio, the healthier the recipe, and vice versa. The question guiding this investigation is: How do the cooking times of healthy recipes, as defined by a low calorie-to-fat ratio, compare to those of unhealthy recipes? This analysis is important because understanding the relationship between recipe health and cooking time can help individuals make more informed food choices, potentially saving time while maintaining healthier diets.
+Everyone gets busy at times, and for some, it’s all the time. Unconsciously, that drives our food choices and it leads us to opt for quicker and less healthy meals. In this analysis, we explore how cooking times differ between healthy and unhealthy recipes using the **"Recipes and Ratings"** dataset.
 
-The dataset contains 232,665 rows, each representing a unique recipe. The relevant columns for this question include:
+While there are many ways to define "healthy." For the purpose of this project, we define it based on the calorie-to-saturated-fat ratio. In other words, the ratio represents the number of calories per gram of saturated fat in a serving. Meaning, a high ratio generally indicates that the food is lower in saturated fat relative to its total calorie content, while a low ratio suggests the food is higher in saturated fat relative to its total calories."
 
-**Name**: The name of the recipe.
+For example, our first observation is a recipe for `name = brownies in the world best ever` with `calories = 138.4` and `saturated fat = 3.8`. The calorie-to-saturated-fat ratio would be 36.47. This means that for every gram of saturated fat in the food, there are approximately 36.47 calories. This high ratio suggests that the brownies per serving has less saturated fat relative to its calories and thereby "healthier." It is likely that most of the calories come from other macronutrients such as carbohydrates, rather than from saturated fat.
 
-**Minutes**: The time (in minutes) it takes to prepare the recipe.
+With that being said, the question guiding this exploration is "How do the cooking times of healthy recipes, as defined by a low calorie-to-saturated-fat ratio, compare to those of unhealthy recipes?" This analysis is important because it helps people find a balance between eating healthy and saving time. By understanding how cooking time affects the healthiness of a recipe, individuals can choose meals that fit their schedules without sacrificing nutrition. This way, people can make better food choices that are not only quick but also promote a healthier lifestyle.
 
-**n_steps**: The number of steps required in the recipe.
+Our dataset contains 232,665 rows after merging, where each observation represents a unique recipe. The relevant columns for this question include:
 
-**Calories**: The calories per serving.
+`name`: the name of the recipe.
 
-**Total Fat**: The percentage of the daily value for fat per serving.
+`minutes`: the time (in minutes) it takes to prepare the recipe.
 
-**Rating**: The recipe's rating out of 5.
+`n_steps`: the number of steps in the recipe.
 
-Additionally, a new column, fat_calorie_ratio, has been created, which calculates the ratio of total fat to calories for each recipe, serving as an indicator of the recipe's healthiness. This column will help categorize the recipes into "healthy" or "unhealthy" based on their fat-to-calorie ratio.
+`calories`: the calories per serving.
+
+*`saturated_fat`: the grams of saturated fat per serving.
+
+`calories_to_sfat`: the calories to grams of saturated fat ratio.
+
+`rating`: the recipe's rating out of 5.
+
+**The percentage daily value (PDV) for saturated fat is based on a standard 2,000-calorie diet. Typically, the recommended daily value for saturated fat is 20 grams.*
+
 ## Exploratory Data Analysis
 ### Data Cleaning
 ### Univariate Analysis
