@@ -43,6 +43,18 @@ Finally, we would like to clarify that there are **two versions** of our datafra
 ### Univariate Analysis
 ### Bivariate Analysis
 ### Interesting Aggregates
+
+For the pivot table, we wanted to explore how the amount of time a recipe takes would affect its ratings and the count of high/low rating values it was given. Thus, we created a pivot table holding the index as `minutes`, the columns as `rating`, the values as `name`, and the aggfunc as `count`. This would allow us to visually produce a table that aggregates more information between columns. An example taken from this table would be if the index value of 2 minutes is analyzed, we would see that there were 2103 5-star ratings for all recipes combined that had a minutes value of 2 minutes. We can also see that by running the line pivot_count_ratings_time.loc[2, 5.0] = 2103. The following shows a snippet of the table: 
+
+| rating | 1.0  | 2.0  | 3.0  | 4.0  | 5.0  |
+|--------|------|------|------|------|------|
+| minutes |      |      |      |      |      |
+| 1      | 7    | 1    | 13   | 85   | 594  |
+| 2      | 15   | 7    | 52   | 442  | 2103 |
+| 3      | 10   | 8    | 41   | 232  | 1125 |
+| 4      | 21   | 4    | 29   | 178  | 615  |
+| 5      | 111  | 87   | 262  | 1635 | 8551 |
+
 ### Imputation
 ## Framing a Prediction Problem
 ## Baseline Model
