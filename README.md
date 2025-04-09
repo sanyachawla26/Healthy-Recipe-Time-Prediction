@@ -11,7 +11,7 @@ For example, our first observation is a recipe for `name = brownies in the world
 
 With that being said, the question guiding this exploration is **"how do the cooking times of healthy recipes compare to those of unhealthy recipes?"** This analysis is important because it helps people find a balance between eating healthy and saving time despite the rush of everyday living. By understanding how cooking time affects the healthiness of a recipe, people can choose meals that fit their schedules without sacrificing nutrition. This way, we can all make better food choices that are not only quick but also promote a healthier lifestyle for an increased quality of life.
 
-Our dataset contains **212, 894 rows** after merging, where each observation represents a unique recipe. The relevant columns for this question include:
+Our dataset contains **212,894 rows** after merging, where each observation represents a unique recipe. The relevant columns for this question include:
 
 `name`: the name of the recipe.
 
