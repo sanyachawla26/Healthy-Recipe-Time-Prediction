@@ -5,13 +5,13 @@ Everyone gets busy at times, and for some, it’s all the time. Unconsciously, t
 
 While there are many ways to define "healthy," for this project we define it based on the calorie-to-saturated-fat ratio. We focus on saturated fat instead of total fat because saturated fats in foods like vegetable oils are linked to higher health risks and are typically associated with being "unhealthy." On the other hand, unsaturated fats like those in avocados are considered "healthier."
 
-In other words, the ratio represents the number of calories per gram of saturated fat in a serving. Meaning, a high ratio generally indicates that the food is lower in saturated fat relative to its total calorie content, while a low ratio suggests the food is higher in saturated fat relative to its total calories.
+In other words, the ratio represents the number of calories per gram of saturated fat in a serving. Meaning, a high ratio generally indicates that the food is lower in saturated fat relative to its total calorie content which is "healthier," while a low ratio suggests the food is higher in saturated fat relative to its total calories which is "unhealthier."
 
 For example, our first observation is a recipe for `name = brownies in the world best ever` with `calories = 138.4` and `saturated fat = 3.8`. The calorie-to-saturated-fat ratio would be 36. This means that for every gram of saturated fat in the food, there are approximately 36 calories. This high ratio suggests that the brownies per serving has less saturated fat relative to its calories and thereby "healthier." It is likely that most of the calories come from other macronutrients such as carbohydrates, rather than from saturated fat.
 
 With that being said, the question guiding this exploration is **"how do the cooking times of healthy recipes compare to those of unhealthy recipes?"** This analysis is important because it helps people find a balance between eating healthy and saving time despite the rush of everyday living. By understanding how cooking time affects the healthiness of a recipe, people can choose meals that fit their schedules without sacrificing nutrition. This way, we can all make better food choices that are not only quick but also promote a healthier lifestyle for an increased quality of life.
 
-Our dataset contains **232,566 rows** after merging, where each observation represents a unique recipe. The relevant columns for this question include:
+Our dataset contains **213,421 rows** after merging, where each observation represents a unique recipe. The relevant columns for this question include:
 
 `name`: the name of the recipe.
 
