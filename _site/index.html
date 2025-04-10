@@ -93,13 +93,84 @@
 
 <p>Finally, we would like to clarify that there are <strong>two versions</strong> of our dataframes. The first version <code class="language-plaintext highlighter-rouge">full_df</code> is the fully cleaned dataframe, using the methods mentioned earlier. The second version <code class="language-plaintext highlighter-rouge">final_df</code> is a copy of <code class="language-plaintext highlighter-rouge">full_df</code>, but with all recipes containing an “inf” calories-to-saturated-fat ratio removed. For the purposes of data cleaning and exploration, we have decided to keep the recipes with an “inf” calories-to-saturated-fat ratio in <code class="language-plaintext highlighter-rouge">full_df</code> because their presence is intuitive in the sense that dividing a recipe with many calories by 0 grams of saturated fat will result in an infinite value. From an interpretive standpoint, this very high ratio can indicate a very healthy recipe. However for visualization and modeling purposes, we will not use <code class="language-plaintext highlighter-rouge">full_df</code> with these “inf” values, since creating models or visualizations based on infinite values would not be appropriate. Therefore, we will proceed with <code class="language-plaintext highlighter-rouge">final_df</code> for the analysis moving forward.</p>
 
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">name</th>
+      <th style="text-align: right">minutes</th>
+      <th style="text-align: right">n_steps</th>
+      <th style="text-align: right">calories</th>
+      <th style="text-align: right">saturated_fat</th>
+      <th style="text-align: right">calories_to_sfat</th>
+      <th style="text-align: right">rating</th>
+      <th style="text-align: left">ratio_category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">1 brownies in the world    best ever</td>
+      <td style="text-align: right">40</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">138.4</td>
+      <td style="text-align: right">3.8</td>
+      <td style="text-align: right">36.4211</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: left">Low Ratio</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">1 in canada chocolate chip cookies</td>
+      <td style="text-align: right">45</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">595.1</td>
+      <td style="text-align: right">10.2</td>
+      <td style="text-align: right">58.3431</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: left">Low Ratio</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">412 broccoli casserole</td>
+      <td style="text-align: right">40</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">194.8</td>
+      <td style="text-align: right">7.2</td>
+      <td style="text-align: right">27.0556</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: left">Low Ratio</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">412 broccoli casserole</td>
+      <td style="text-align: right">40</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">194.8</td>
+      <td style="text-align: right">7.2</td>
+      <td style="text-align: right">27.0556</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: left">Low Ratio</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">412 broccoli casserole</td>
+      <td style="text-align: right">40</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">194.8</td>
+      <td style="text-align: right">7.2</td>
+      <td style="text-align: right">27.0556</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: left">Low Ratio</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="univariate-analysis">Univariate Analysis</h3>
 
 <iframe src="plotly/uni.html" width="800" height="600" frameborder="0"></iframe>
 
+<p>In our pie chart, we see an almost even split between the amount of recipes that were categorized as “Low Ratio” and “High Ratio.” There’s a slightly larger quantity of “Low Ratio” recipes which we are defining as being unhealthy recipes. The difference is around 10% which isn’t much but worth noting.</p>
+
 <h3 id="bivariate-analysis">Bivariate Analysis</h3>
 
 <iframe src="plotly/biv.html" width="800" height="600" frameborder="0"></iframe>
+
+<p>In our scatter plot, we showcased a relationship between the calories-to-saturated-fat ratio and the minutes. We see a trend in which the majority of lower ratios took less time, but some lower ratios also took more time. As the ratios increased, we see all of these specific recipes had relatively low minute values.</p>
 
 <h3 id="interesting-aggregates">Interesting Aggregates</h3>
 

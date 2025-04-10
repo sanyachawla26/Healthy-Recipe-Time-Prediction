@@ -40,6 +40,15 @@ Adding new columns, we created an average ratings column as mentioned briefly ab
 
 Finally, we would like to clarify that there are **two versions** of our dataframes. The first version `full_df` is the fully cleaned dataframe, using the methods mentioned earlier. The second version `final_df` is a copy of `full_df`, but with all recipes containing an "inf" calories-to-saturated-fat ratio removed. For the purposes of data cleaning and exploration, we have decided to keep the recipes with an "inf" calories-to-saturated-fat ratio in `full_df` because their presence is intuitive in the sense that dividing a recipe with many calories by 0 grams of saturated fat will result in an infinite value. From an interpretive standpoint, this very high ratio can indicate a very healthy recipe. However for visualization and modeling purposes, we will not use `full_df` with these "inf" values, since creating models or visualizations based on infinite values would not be appropriate. Therefore, we will proceed with `final_df` for the analysis moving forward.
 
+| name                                 |   minutes |   n_steps |   calories |   saturated_fat |   calories_to_sfat |   rating | ratio_category   |
+|:-------------------------------------|----------:|----------:|-----------:|----------------:|-------------------:|---------:|:-----------------|
+| 1 brownies in the world    best ever |        40 |        10 |      138.4 |             3.8 |            36.4211 |        4 | Low Ratio        |
+| 1 in canada chocolate chip cookies   |        45 |        12 |      595.1 |            10.2 |            58.3431 |        5 | Low Ratio        |
+| 412 broccoli casserole               |        40 |         6 |      194.8 |             7.2 |            27.0556 |        5 | Low Ratio        |
+| 412 broccoli casserole               |        40 |         6 |      194.8 |             7.2 |            27.0556 |        5 | Low Ratio        |
+| 412 broccoli casserole               |        40 |         6 |      194.8 |             7.2 |            27.0556 |        5 | Low Ratio        |
+
+
 ### Univariate Analysis
 
  <iframe
@@ -49,6 +58,8 @@ Finally, we would like to clarify that there are **two versions** of our datafra
  frameborder="0"
  ></iframe>
 
+ In our pie chart, we see an almost even split between the amount of recipes that were categorized as “Low Ratio” and “High Ratio.” There’s a slightly larger quantity of “Low Ratio” recipes which we are defining as being unhealthy recipes. The difference is around 10% which isn’t much but worth noting.
+
 ### Bivariate Analysis
 
  <iframe
@@ -57,6 +68,8 @@ Finally, we would like to clarify that there are **two versions** of our datafra
  height="600"
  frameborder="0"
  ></iframe>
+
+ In our scatter plot, we showcased a relationship between the calories-to-saturated-fat ratio and the minutes. We see a trend in which the majority of lower ratios took less time, but some lower ratios also took more time. As the ratios increased, we see all of these specific recipes had relatively low minute values.
 
 ### Interesting Aggregates
 
