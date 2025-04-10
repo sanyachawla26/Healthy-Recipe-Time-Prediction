@@ -90,7 +90,7 @@ We decided to **not impute** any missing values. The `rating` column has missing
 
 ## Framing a Prediction Problem
 
-As previously mentioned, we are investigating *how the cooking times of healthy recipes compare to those of unhealthy recipes.* Our problem is adequate for a **regression model** because the continuous numerical variable we are predicting, cooking time in minutes, can produce exact numerical outcomes. Ultimately, we are using the calories-to-saturated-fat ratio as the predictor variable to predict how long it takes to prepare or cook a recipe.
+As previously mentioned, we are investigating *how the cooking times of healthy recipes compare to those of unhealthy recipes.* Our problem is adequate for a **regression model** because the continuous numerical variable we are predicting, cooking time in minutes, can produce exact numerical outcomes. Ultimately, we are using the calories-to-saturated-fat ratio as the predictor variable to predict how long it takes to prepare or cook a recipe because we will have the ratio at the time of prediction as it is independent from cooking time.
 
 The exploration for this problem comes from wanting to examine whether there is any correlation between the healthiness of a recipe and the time it takes to cook. Specifically, we want to determine if healthier recipes (with a higher ratio) take more or less time to prepare compared to unhealthier ones (with a lower ratio). This could provide valuable insights into whether healthier recipes usually require longer time for preparation and time-consuming steps or if there is no significant difference in cooking time between the two categories.
 
