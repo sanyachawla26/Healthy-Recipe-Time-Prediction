@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Quick Fix or Healthy Mix? | How does the cooking time of healthy recipes compare to that of unhealthy recipes?</title>
+<title>Quick Fix or Healthy Mix? | How does the cooking time of healthy recipes, defined by the lowest fat-to-calorie ratio, compare to that of unhealthy recipes?</title>
 <meta name="generator" content="Jekyll v3.9.5" />
 <meta property="og:title" content="Quick Fix or Healthy Mix?" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="How does the cooking time of healthy recipes compare to that of unhealthy recipes?" />
-<meta property="og:description" content="How does the cooking time of healthy recipes compare to that of unhealthy recipes?" />
+<meta name="description" content="How does the cooking time of healthy recipes, defined by the lowest fat-to-calorie ratio, compare to that of unhealthy recipes?" />
+<meta property="og:description" content="How does the cooking time of healthy recipes, defined by the lowest fat-to-calorie ratio, compare to that of unhealthy recipes?" />
 <link rel="canonical" href="http://localhost:4000/" />
 <meta property="og:url" content="http://localhost:4000/" />
 <meta property="og:site_name" content="Quick Fix or Healthy Mix?" />
@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Quick Fix or Healthy Mix?" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"How does the cooking time of healthy recipes compare to that of unhealthy recipes?","headline":"Quick Fix or Healthy Mix?","name":"Quick Fix or Healthy Mix?","url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebSite","description":"How does the cooking time of healthy recipes, defined by the lowest fat-to-calorie ratio, compare to that of unhealthy recipes?","headline":"Quick Fix or Healthy Mix?","name":"Quick Fix or Healthy Mix?","url":"http://localhost:4000/"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -244,6 +244,13 @@
 <p>We decided to <strong>not impute</strong> any missing values. The <code class="language-plaintext highlighter-rouge">rating</code> column has missing values that were originally marked with 0 but we modified to NaN instead, as explained previously. We are deciding to not use any imputation techniques, such as mean imputation, to change the NaNs into a value. The <code class="language-plaintext highlighter-rouge">rating</code> column is irrelevant to our analysis and modeling. Therefore, it would be irrelevant to perform any imputation.</p>
 
 <h2 id="framing-a-prediction-problem">Framing a Prediction Problem</h2>
+
+<p>As previously mentioned, we are investigating <em>how the cooking times of healthy recipes compare to those of unhealthy recipes.</em> Our problem is adequate for a <strong>regression model</strong> because the continuous numerical variable we are predicting, cooking time in minutes, can produce exact numerical outcomes. Ultimately, we are using the calories-to-saturated-fat ratio as the predictor variable to predict how long it takes to prepare or cook a recipe.</p>
+
+<p>The exploration for this problem comes from wanting to examine whether there is any correlation between the healthiness of a recipe and the time it takes to cook. Specifically, we want to determine if healthier recipes (with a higher ratio) take more or less time to prepare compared to unhealthier ones (with a lower ratio). This could provide valuable insights into whether healthier recipes usually require longer time for preparation and time-consuming steps or if there is no significant difference in cooking time between the two categories.</p>
+
+<p>We chose <strong>Mean Squared Error (MSE)</strong> because it effectively accounts for the large variation in the calories-to-saturated-fat ratio, which might lead to significant differences in cooking times. MSE heavily penalizes large errors so the corresponding model will minimize significant deviations in the predictions. This is important for our continuous data because it ensures that extreme values in the ratio don’t disproportionately affect model performance, which is something that metrics like R-squared can overlook.</p>
+
 <h2 id="baseline-model">Baseline Model</h2>
 <h2 id="final-model">Final Model</h2>
 

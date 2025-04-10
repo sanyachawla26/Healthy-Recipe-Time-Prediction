@@ -89,5 +89,12 @@ For the pivot table, we wanted to explore how the amount of time a recipe takes 
 We decided to **not impute** any missing values. The `rating` column has missing values that were originally marked with 0 but we modified to NaN instead, as explained previously. We are deciding to not use any imputation techniques, such as mean imputation, to change the NaNs into a value. The `rating` column is irrelevant to our analysis and modeling. Therefore, it would be irrelevant to perform any imputation.
 
 ## Framing a Prediction Problem
+
+As previously mentioned, we are investigating *how the cooking times of healthy recipes compare to those of unhealthy recipes.* Our problem is adequate for a **regression model** because the continuous numerical variable we are predicting, cooking time in minutes, can produce exact numerical outcomes. Ultimately, we are using the calories-to-saturated-fat ratio as the predictor variable to predict how long it takes to prepare or cook a recipe.
+
+The exploration for this problem comes from wanting to examine whether there is any correlation between the healthiness of a recipe and the time it takes to cook. Specifically, we want to determine if healthier recipes (with a higher ratio) take more or less time to prepare compared to unhealthier ones (with a lower ratio). This could provide valuable insights into whether healthier recipes usually require longer time for preparation and time-consuming steps or if there is no significant difference in cooking time between the two categories.
+
+We chose **Mean Squared Error (MSE)** because it effectively accounts for the large variation in the calories-to-saturated-fat ratio, which might lead to significant differences in cooking times. MSE heavily penalizes large errors so the corresponding model will minimize significant deviations in the predictions. This is important for our continuous data because it ensures that extreme values in the ratio don't disproportionately affect model performance, which is something that metrics like R-squared can overlook.
+
 ## Baseline Model
 ## Final Model
