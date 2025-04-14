@@ -86,7 +86,21 @@ For the pivot table, we wanted to explore how the amount of time a recipe takes 
 
 ### Imputation
 
-We decided to **not impute** any missing values. The `rating` column has missing values that were originally marked with 0 but we modified to NaN instead, as explained previously. We are deciding to not use any imputation techniques, such as mean imputation, to change the NaNs into a value. The `rating` column is irrelevant to our analysis and modeling. Therefore, it would be irrelevant to perform any imputation.
+We decided to use **probabilistic imputation** on the `rating` column because rating is an integral part of our baseline model. We wanted to ensure we could capture all the data from that feature. Therefore, we chose to use probabilistic imputation as our method of imputation because it imposes the least bias in how the imputed values are determined because random values are pulled from the sample of prexisting rating. We avoided mean imputation as we felt the average rating would be on the higher end with the increased amount of 5.0 ratings in the data. Below is a plot of the data before and after probabilistic imputation. As observed, there isn't much of a noticable difference before vs. after imputation but **we will proceed with imputation to ensure consistency across the data**.
+
+ <iframe
+ src="plotly/fig_before.html"
+ width="800"
+ height="600"
+ frameborder="0"
+ ></iframe>
+
+ <iframe
+ src="plotly/fig_after.html"
+ width="800"
+ height="600"
+ frameborder="0"
+ ></iframe>
 
 ## Framing a Prediction Problem
 
@@ -97,4 +111,44 @@ The exploration for this problem comes from wanting to examine whether there is 
 We chose **Mean Squared Error (MSE)** because it effectively accounts for the large variation in the calories-to-saturated-fat ratio, which might lead to significant differences in cooking times. MSE heavily penalizes large errors so the corresponding model will minimize significant deviations in the predictions. This is important for our continuous data because it ensures that extreme values in the ratio don't disproportionately affect model performance, which is something that metrics like R-squared can overlook.
 
 ## Baseline Model
+
+Our target variable is `minutes`, and our baseline model consists of a RandomForestRegressor because our target variable is continuous. We found this to be our best choice for our baseline considering it is simple and can give more perspective as a reference for a complex model in our final model. 
+
+Our features include `calories` and `n_steps`. The calories represent the energy content of a recipe and the number of steps can showcase how complex a recipe is, potentially impacting the cooking time. The variables `calories` and `n_steps` are quantitative. We also use the `rating` as a feature, as it may convey the cooking time based on high/low ratings. We used the `Ordinal Encoding` model on the ordinal `rating` feature, so our model takes in both quantitative and ordinal features. 
+
+Finally, in order to evaluate our model, we use **Mean Squared Error** to understand how well our model was able to predict the cooking time. We obtained an MSE value of **3629.87**. We believe our current model is good because we scale the quantitative features and encode the ordinal feature, but there is room for improvement. We have not used our ratio feature and have also not introduced specific hyperparameter features to help decrease the Mean Squared Error further. We are able to generalize to unseen data because we performed a train test split, where we split the data into 80% training and 20% testing, and we then evaluated the Mean Squared Error based on the test data.
+
+```
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+
+X = final_df[['calories', 'n_steps', 'rating']]
+y = final_df['minutes']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), ['calories', 'n_steps']),  # Scale numerical features
+        ('cat', OrdinalEncoder(), ['rating'])  # Encode ordinal categorical feature
+    ])
+
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', RandomForestRegressor(random_state=42))
+])
+
+# train model on the test set
+pipeline.fit(X_train, y_train)
+
+# predict on the test set
+y_pred = pipeline.predict(X_test)
+
+mse = mean_squared_error(y_test, y_pred)
+```
+
 ## Final Model

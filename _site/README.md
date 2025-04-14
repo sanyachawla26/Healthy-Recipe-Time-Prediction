@@ -48,7 +48,6 @@ Finally, we would like to clarify that there are **two versions** of our datafra
 | 412 broccoli casserole               |        40 |         6 |      194.8 |             7.2 |            27.0556 |        5 | Low Ratio        |
 | 412 broccoli casserole               |        40 |         6 |      194.8 |             7.2 |            27.0556 |        5 | Low Ratio        |
 
-
 ### Univariate Analysis
 
  <iframe
@@ -73,20 +72,35 @@ Finally, we would like to clarify that there are **two versions** of our datafra
 
 ### Interesting Aggregates
 
-For the pivot table, we wanted to explore how the amount of time a recipe takes would affect its ratings and the count of high/low rating values it was given. Thus, we created a pivot table holding the index as `minutes`, the columns as `rating`, the values as `name`, and the aggfunc as `count`. This would allow us to visually produce a table that aggregates more information between columns. An example taken from this table would be if the index value of 2 minutes is analyzed, we would see that there were 2103 5-star ratings for all recipes combined that had a minutes value of 2 minutes. We can also see that by running the line pivot_count_ratings_time.loc[2, 5.0] = 2103. The following shows a snippet of the table: 
+For the pivot table, we wanted to explore how the amount of time a recipe takes would affect its ratings and the count of high/low rating values it was given. Thus, we created a pivot table holding the index as `minutes`, the columns as `rating`, the values as `name`, and the aggfunc as `count`. This would allow us to visually produce a table that aggregates more information between columns. An example taken from this table would be if the index value of 2 minutes is analyzed, we would see that there were 2103 5-star ratings for all recipes combined that had a minutes value of 2 minutes. We can also see that by running the line pivot_count_ratings_time.loc[2, 5.0] = 1098. The following shows a snippet of the table: 
 
-| rating | 1.0  | 2.0  | 3.0  | 4.0  | 5.0  |
-|--------|------|------|------|------|------|
-| minutes |      |      |      |      |      |
-| 1      | 7    | 1    | 13   | 85   | 594  |
-| 2      | 15   | 7    | 52   | 442  | 2103 |
-| 3      | 10   | 8    | 41   | 232  | 1125 |
-| 4      | 21   | 4    | 29   | 178  | 615  |
-| 5      | 111  | 87   | 262  | 1635 | 8551 |
+|   rating  |   1.0 |   2.0 |   3.0 |   4.0 |   5.0 |
+|-----------|-------|-------|-------|-------|-------|
+|   minutes |       |       |       |       |       |
+|         1 |     7 |     0 |     6 |    41 |   266 |
+|         2 |     8 |     5 |    26 |   237 |  1098 |
+|         3 |     5 |     7 |    26 |   138 |   714 |
+|         4 |    20 |     4 |    27 |   145 |   519 |
+|         5 |    92 |    66 |   199 |  1257 |  6136 |
+
 
 ### Imputation
 
-We decided to **not impute** any missing values. The `rating` column has missing values that were originally marked with 0 but we modified to NaN instead, as explained previously. We are deciding to not use any imputation techniques, such as mean imputation, to change the NaNs into a value. The `rating` column is irrelevant to our analysis and modeling. Therefore, it would be irrelevant to perform any imputation.
+We decided to use **probabilistic imputation** on the `rating` column because rating is an integral part of our baseline model. We wanted to ensure we could capture all the data from that feature. Therefore, we chose to use probabilistic imputation as our method of imputation because it imposes the least bias in how the imputed values are determined because random values are pulled from the sample of prexisting rating. We avoided mean imputation as we felt the average rating would be on the higher end with the increased amount of 5.0 ratings in the data. Below is a plot of the data before and after probabilistic imputation. As observed, there isn't much of a noticable difference before vs. after imputation but **we will proceed with imputation to ensure consistency across the data**.
+
+ <iframe
+ src="plotly/fig_before.html"
+ width="800"
+ height="600"
+ frameborder="0"
+ ></iframe>
+
+ <iframe
+ src="plotly/fig_after.html"
+ width="800"
+ height="600"
+ frameborder="0"
+ ></iframe>
 
 ## Framing a Prediction Problem
 
@@ -97,4 +111,44 @@ The exploration for this problem comes from wanting to examine whether there is 
 We chose **Mean Squared Error (MSE)** because it effectively accounts for the large variation in the calories-to-saturated-fat ratio, which might lead to significant differences in cooking times. MSE heavily penalizes large errors so the corresponding model will minimize significant deviations in the predictions. This is important for our continuous data because it ensures that extreme values in the ratio don't disproportionately affect model performance, which is something that metrics like R-squared can overlook.
 
 ## Baseline Model
+
+Our target variable is `minutes`, and our baseline model consists of a RandomForestRegressor because our target variable is continuous. We found this to be our best choice for our baseline considering it is simple and can give more perspective as a reference for a complex model in our final model. 
+
+Our features include `calories` and `n_steps`. The calories represent the energy content of a recipe and the number of steps can showcase how complex a recipe is, potentially impacting the cooking time. The variables `calories` and `n_steps` are quantitative. We also use the `rating` as a feature, as it may convey the cooking time based on high/low ratings. We used the `Ordinal Encoding` model on the ordinal `rating` feature, so our model takes in both quantitative and ordinal features. 
+
+Finally, in order to evaluate our model, we use **Mean Squared Error** to understand how well our model was able to predict the cooking time. We obtained an MSE value of **3629.87**. We believe our current model is good because we scale the quantitative features and encode the ordinal feature, but there is room for improvement. We have not used our ratio feature and have also not introduced specific hyperparameter features to help decrease the Mean Squared Error further. We are able to generalize to unseen data because we performed a train test split, where we split the data into 80% training and 20% testing, and we then evaluated the Mean Squared Error based on the test data.
+
+```
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+
+X = final_df[['calories', 'n_steps', 'rating']]
+y = final_df['minutes']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), ['calories', 'n_steps']),  # Scale numerical features
+        ('cat', OrdinalEncoder(), ['rating'])  # Encode ordinal categorical feature
+    ])
+
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', RandomForestRegressor(random_state=42))
+])
+
+# train model on the test set
+pipeline.fit(X_train, y_train)
+
+# predict on the test set
+y_pred = pipeline.predict(X_test)
+
+mse = mean_squared_error(y_test, y_pred)
+```
+
 ## Final Model
