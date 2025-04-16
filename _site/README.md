@@ -1,5 +1,5 @@
 # Quick Fix or Healthy Mix?
-By: Carolina Mondragon and Sanya Chawla
+By: Carolina Mondragon (cmondrag@umich.edu) and Sanya Chawla (csanya@umich.edu)
 ## Introduction
 Everyone gets busy at times, and for some, it’s all the time. Unconsciously, that drives our food choices and it leads us to opt for quicker and less healthy meals. In this analysis, we explore how cooking times differ between healthy and unhealthy recipes using the **"Recipes and Ratings"** dataset.
 
