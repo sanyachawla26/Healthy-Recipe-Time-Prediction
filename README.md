@@ -153,7 +153,13 @@ mse = mean_squared_error(y_test, y_pred)
 
 ## Final Model
 
-We obtained an MSE value of **2528.32**. I'm adding a sentence.
+Our final model introduces new engineered features alongside our pre-existing features from our baseline model. Our first engineered feature is our previously engineered feature of the calories-to-saturated-fat-ratio, and our second engineered feature was looking at an interaction of ratings and the number of steps in a recipe. We wanted to see how this feature might depict a pattern in which complex recipes may align with a recipe being unhealthier based on our data, where the recipes with the most number of steps were conventionally unhealthy. Ratings multiplied by the number of steps also allows us to look at a more nuanced version of the ratings from the baseline model, where higher ratings could imply that complex foods might be more enjoyable even though they may take more time. 
+
+We kept the Column Transformer similar from the baseline model, while adding our two new engineered features as part of the Standard Scaler transformation since both new features are quantitative. We also kept the original ordinal encoding on the rating feature as well from the baseline model. In order to ensure our train-test split data was the same from the baseline model as well in order to prevent the dataset from changing between models, we kept our random state the same. 
+
+While continuing with our use of the RandomForestRegressor Model, we added n_estimators and max_depth as part of our hyperparameter tuning through the use of GridSearchCV. We used n_estimators because more trees improve accuracy by averaging out predictions and reducing variance. The focus is to find the efficiency sweet spot where there’s not too few trees where we risk underfitting and there’s not too many where we increase training time. We also used max_depth because it controls the complexity of each tree. The focus is to find the balance where the trees capture enough meaningful feature interactions, although they can’t be too deep to risk overfitting or too shallow to risk underfitting.
+
+We wanted to capture as much from our data in our folds as well through our hyperparameter values, so we chose bigger numbers such as 200 for n_estimators. Finally, we performed GridSearchCV on our pipeline and parameter grid and explored the **MSE of our final model**, which gave us a final value of **2528.32**. As shown from our baseline to final model, our MSE decreased by 1101.55. The engineered features allowed us to explore new nonlinear relationships that our baseline model did otherwise not do, and the GridSearchCV uses cross-validation to ensure our model is trained on various splits of the training data for improved generalization and prediction on the testing data. 
 
 ```
 from sklearn.model_selection import GridSearchCV
