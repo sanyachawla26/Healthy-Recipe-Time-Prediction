@@ -153,7 +153,7 @@ mse = mean_squared_error(y_test, y_pred)
 
 ## Final Model
 
-We obtained an MSE value of **2528.32**.
+We obtained an MSE value of **2528.32**. I'm adding a sentence.
 
 ```
 from sklearn.model_selection import GridSearchCV
