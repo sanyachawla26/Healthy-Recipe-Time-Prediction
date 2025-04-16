@@ -116,7 +116,7 @@ Our target variable is `minutes`, and our baseline model consists of a RandomFor
 
 Our features include `calories` and `n_steps`. The calories represent the energy content of a recipe and the number of steps can showcase how complex a recipe is, potentially impacting the cooking time. The variables `calories` and `n_steps` are quantitative. We also use the `rating` as a feature, as it may convey the cooking time based on high/low ratings. We used the `Ordinal Encoding` model on the ordinal `rating` feature, so our model takes in both quantitative and ordinal features. 
 
-Finally, in order to evaluate our model, we use **Mean Squared Error** to understand how well our model was able to predict the cooking time. We obtained an MSE value of **3629.87**. We believe our current model is good because we scale the quantitative features and encode the ordinal feature, but there is room for improvement. We have not used our ratio feature and have also not introduced specific hyperparameter features to help decrease the Mean Squared Error further. We are able to generalize to unseen data because we performed a train test split, where we split the data into 80% training and 20% testing, and we then evaluated the Mean Squared Error based on the test data.
+Finally, in order to evaluate our model, we use **Mean Squared Error** to understand how well our model was able to predict the cooking time. We obtained an MSE value of **3642.02**. We believe our current model is good because we scale the quantitative features and encode the ordinal feature, but there is room for improvement. We have not used our ratio feature and have also not introduced specific hyperparameter features to help decrease the Mean Squared Error further. We are able to generalize to unseen data because we performed a train test split, where we split the data into 80% training and 20% testing, and we then evaluated the Mean Squared Error based on the test data.
 
 ```
 from sklearn.model_selection import train_test_split
@@ -133,8 +133,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 preprocessor = ColumnTransformer(
     transformers=[
-        ('num', StandardScaler(), ['calories', 'n_steps']),  # Scale numerical features
-        ('cat', OrdinalEncoder(), ['rating'])  # Encode ordinal categorical feature
+        ('num', StandardScaler(), ['calories', 'n_steps']),
+        ('cat', OrdinalEncoder(), ['rating'])
     ])
 
 pipeline = Pipeline(steps=[
@@ -152,3 +152,45 @@ mse = mean_squared_error(y_test, y_pred)
 ```
 
 ## Final Model
+
+We obtained an MSE value of **2528.32**.
+
+```
+from sklearn.model_selection import GridSearchCV
+
+final_df = final_df.copy()
+
+# create engineered features
+final_df['calories_to_sfat'] # already engineered
+final_df['rating_x_steps'] = final_df['rating'] * final_df['n_steps']
+
+features = ['calories', 'saturated_fat', 'n_steps', 'rating', 'calories_to_sfat', 'rating_x_steps']
+X = final_df[features]
+y = final_df['minutes']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), ['calories', 'saturated_fat', 'n_steps', 'calories_to_sfat', 'rating_x_steps']),
+        ('cat', OrdinalEncoder(), ['rating'])
+    ]
+)
+
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', RandomForestRegressor(random_state=42))
+])
+
+param_grid = {
+    'regressor__n_estimators': [100, 200],
+    'regressor__max_depth': [10, 20, None],
+}
+
+grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
+grid_search.fit(X_train, y_train)
+
+best_model = grid_search.best_estimator_
+y_pred = best_model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+```
