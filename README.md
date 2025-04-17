@@ -72,7 +72,7 @@ Finally, we would like to clarify that there are **two versions** of our datafra
 
 ### Interesting Aggregates
 
-For the pivot table, we wanted to explore how the amount of time a recipe takes would affect its ratings and the count of high/low rating values it was given. Thus, we created a pivot table holding the index as `minutes`, the columns as `rating`, the values as `name`, and the aggfunc as `count`. This would allow us to visually produce a table that aggregates more information between columns. An example taken from this table would be if the index value of 2 minutes is analyzed, we would see that there were 2103 5-star ratings for all recipes combined that had a minutes value of 2 minutes. We can also see that by running the line pivot_count_ratings_time.loc[2, 5.0] = 1098. The following shows a snippet of the table: 
+For the pivot table, we wanted to explore how the amount of time a recipe takes would affect its ratings and the count of high/low rating values it was given. Thus, we created a pivot table holding the index as `minutes`, the columns as `rating`, the values as `name`, and the aggfunc as `count`. This would allow us to visually produce a table that aggregates more information between columns. An example taken from this table would be if the index value of 2 minutes is analyzed, we would see that there were 1098 5-star ratings for all recipes combined that had a minutes value of 2 minutes. We can also see that by running the line pivot_count_ratings_time.loc[2, 5.0] = 1098. The following shows a snippet of the table: 
 
 |   rating  |   1.0 |   2.0 |   3.0 |   4.0 |   5.0 |
 |-----------|-------|-------|-------|-------|-------|
@@ -104,99 +104,28 @@ We decided to use **probabilistic imputation** on the `rating` column because ra
 
 ## Framing a Prediction Problem
 
-As previously mentioned, we are investigating *how the cooking times of healthy recipes compare to those of unhealthy recipes.* Our problem is adequate for a **regression model** because the continuous numerical variable we are predicting, cooking time in minutes, can produce exact numerical outcomes. Ultimately, we are using the calories-to-saturated-fat ratio as the predictor variable to predict how long it takes to prepare or cook a recipe because we will have the ratio at the time of prediction as it is independent from cooking time.
+As previously mentioned, we are investigating *how the cooking times of healthy recipes compare to those of unhealthy recipes.* Our problem is adequate for a **regression model** because the continuous numerical **variable we are predicting, cooking time in minutes**, can produce exact numerical outcomes.
 
 The exploration for this problem comes from wanting to examine whether there is any correlation between the healthiness of a recipe and the time it takes to cook. Specifically, we want to determine if healthier recipes (with a higher ratio) take more or less time to prepare compared to unhealthier ones (with a lower ratio). This could provide valuable insights into whether healthier recipes usually require longer time for preparation and time-consuming steps or if there is no significant difference in cooking time between the two categories.
 
-We chose **Mean Squared Error (MSE)** because it effectively accounts for the large variation in the calories-to-saturated-fat ratio, which might lead to significant differences in cooking times. MSE heavily penalizes large errors so the corresponding model will minimize significant deviations in the predictions. This is important for our continuous data because it ensures that extreme values in the ratio don't disproportionately affect model performance, which is something that metrics like R-squared can overlook.
+We chose **Mean Squared Error (MSE)** because it effectively accounts for large variations in the data, which might lead to significant differences in cooking time. MSE heavily penalizes large errors which ensures that the model minimizes significant deviations. This is important for our continuous data because it ensures that extreme values in the ratio don't disproportionately affect model performance, which is something that metrics like R-squared can overlook.
 
 ## Baseline Model
 
-Our target variable is `minutes`, and our baseline model consists of a RandomForestRegressor because our target variable is continuous. We found this to be our best choice for our baseline considering it is simple and can give more perspective as a reference for a complex model in our final model. 
+Our target variable is `minutes`, and our baseline model consists of a `RandomForestRegressor()` because our target variable is continuous. We found this to be the best choice for our baseline since it's simple and gives us a good foundation for building a more complex model later on.
 
-Our features include `calories` and `n_steps`. The calories represent the energy content of a recipe and the number of steps can showcase how complex a recipe is, potentially impacting the cooking time. The variables `calories` and `n_steps` are quantitative. We also use the `rating` as a feature, as it may convey the cooking time based on high/low ratings. We used the `Ordinal Encoding` model on the ordinal `rating` feature, so our model takes in both quantitative and ordinal features. 
+Our features include `calories` and `n_steps` and `rating`. The variables `calories` and `n_steps` are quantitative while `rating` is qualitative ordinal. Furthermore, we used `OrdinalEncoding()` on `rating` to account for it being the only categorical variable in our baseline.
 
-Finally, in order to evaluate our model, we use **Mean Squared Error** to understand how well our model was able to predict the cooking time. We obtained an MSE value of **3642.02**. We believe our current model is good because we scale the quantitative features and encode the ordinal feature, but there is room for improvement. We have not used our ratio feature and have also not introduced specific hyperparameter features to help decrease the Mean Squared Error further. We are able to generalize to unseen data because we performed a train test split, where we split the data into 80% training and 20% testing, and we then evaluated the Mean Squared Error based on the test data.
+We use **Mean Squared Error** to understand how well our model was able to predict the cooking time. We obtained an MSE value of **3642.02**. We believe our current model is good because we scaled the quantitative features and encoded the ordinal feature, but there is room for improvement. We have not used the `calories_to_sfat` feature and have also not introduced specific hyperparameter features to help decrease the Mean Squared Error further. 
 
-```
-from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
-
-X = final_df[['calories', 'n_steps', 'rating']]
-y = final_df['minutes']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', StandardScaler(), ['calories', 'n_steps']),
-        ('cat', OrdinalEncoder(), ['rating'])
-    ])
-
-pipeline = Pipeline(steps=[
-    ('preprocessor', preprocessor),
-    ('regressor', RandomForestRegressor(random_state=42))
-])
-
-# train model on the test set
-pipeline.fit(X_train, y_train)
-
-# predict on the test set
-y_pred = pipeline.predict(X_test)
-
-mse = mean_squared_error(y_test, y_pred)
-```
+Furthermore, to ensure the model generalizes well to unseen data, we performed a train-test split. This split divides the dataset into 80% for training and 20% for testing which allows us to evaluate the model’s performance on data it hasn't seen before.
 
 ## Final Model
 
-Our final model introduces new engineered features alongside our pre-existing features from our baseline model. Our first engineered feature is our previously engineered feature of the calories-to-saturated-fat-ratio, and our second engineered feature was looking at an interaction of ratings and the number of steps in a recipe. We wanted to see how this feature might depict a pattern in which complex recipes may align with a recipe being unhealthier based on our data, where the recipes with the most number of steps were conventionally unhealthy. Ratings multiplied by the number of steps also allows us to look at a more nuanced version of the ratings from the baseline model, where higher ratings could imply that complex foods might be more enjoyable even though they may take more time. 
+Our final model introduces new engineered features alongside our pre-existing features from our baseline model. Our first engineered feature is the `calories_to_sfat`, which was made previously. Our second engineered feature was looking at an interaction of ratings and the number of steps in a recipe. The driving force behind creating this feature was to explore the relationship between complex recipes and their "unhealthiness," and vice versa. Thus, using a variable where `rating` is multiplied by `n_steps`, we are able to look at a more nuanced version of the ratings from the baseline model. 
 
-We kept the Column Transformer similar from the baseline model, while adding our two new engineered features as part of the Standard Scaler transformation since both new features are quantitative. We also kept the original ordinal encoding on the rating feature as well from the baseline model. In order to ensure our train-test split data was the same from the baseline model as well in order to prevent the dataset from changing between models, we kept our random state the same. 
+For our modeling algorithm, we kept the `ColumnTransformer()` from the baseline model. However, we added our two new engineered features as part of the `StandardScaler()` transformation since both new features are quantitative. We also kept the original `OrdinalEncoding()` on `rating`, also from the baseline model. In order to ensure our train-test split data was consistent with that of the baseline model, we kept our `random_state` the same. 
 
-While continuing with our use of the RandomForestRegressor Model, we added n_estimators and max_depth as part of our hyperparameter tuning through the use of GridSearchCV. We used n_estimators because more trees improve accuracy by averaging out predictions and reducing variance. The focus is to find the efficiency sweet spot where there’s not too few trees where we risk underfitting and there’s not too many where we increase training time. We also used max_depth because it controls the complexity of each tree. The focus is to find the balance where the trees capture enough meaningful feature interactions, although they can’t be too deep to risk overfitting or too shallow to risk underfitting.
+For our hyperparameter tuning, we continued with the `RandomForestRegressor()` model and added `n_estimators` and `max_depth` through the use of `GridSearchCV()`. By using `n_estimators`, we are able to improve accuracy by averaging out predictions and reducing variance while keeping in mind that too few trees can lead to underfitting and too many trees can lead to an increase in training time. By using `max_depth`, we are able to control the complexity of each tree to guarantee there are enough trees to capture meaningful feature interactions. These trees shall not be too deep to risk overfitting or too shallow to risk underfitting.
 
-We wanted to capture as much from our data in our folds as well through our hyperparameter values, so we chose bigger numbers such as 200 for n_estimators. Finally, we performed GridSearchCV on our pipeline and parameter grid and explored the **MSE of our final model**, which gave us a final value of **2528.32**. As shown from our baseline to final model, our MSE decreased by 1101.55. The engineered features allowed us to explore new nonlinear relationships that our baseline model did otherwise not do, and the GridSearchCV uses cross-validation to ensure our model is trained on various splits of the training data for improved generalization and prediction on the testing data. 
-
-```
-from sklearn.model_selection import GridSearchCV
-
-final_df = final_df.copy()
-
-# create engineered features
-final_df['calories_to_sfat'] # already engineered
-final_df['rating_x_steps'] = final_df['rating'] * final_df['n_steps']
-
-features = ['calories', 'saturated_fat', 'n_steps', 'rating', 'calories_to_sfat', 'rating_x_steps']
-X = final_df[features]
-y = final_df['minutes']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', StandardScaler(), ['calories', 'saturated_fat', 'n_steps', 'calories_to_sfat', 'rating_x_steps']),
-        ('cat', OrdinalEncoder(), ['rating'])
-    ]
-)
-
-pipeline = Pipeline(steps=[
-    ('preprocessor', preprocessor),
-    ('regressor', RandomForestRegressor(random_state=42))
-])
-
-param_grid = {
-    'regressor__n_estimators': [100, 200],
-    'regressor__max_depth': [10, 20, None],
-}
-
-grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring='neg_mean_squared_error', n_jobs=-1)
-grid_search.fit(X_train, y_train)
-
-best_model = grid_search.best_estimator_
-y_pred = best_model.predict(X_test)
-mse = mean_squared_error(y_test, y_pred)
-```
+For our performance analysis, we wanted to capture sufficient data in our folds and hyperparameter values by selecting larger values such as 200 for `n_estimators`. We performed `GridSearchCV()` on our pipeline and parameter grid and explored the **MSE of our final model** which was **2528.32**. As shown from our baseline to final model, our **MSE decreased by 1101.55**. The engineered features allowed us to explore new nonlinear relationships that our baseline model did not. Additionally, `GridSearchCV()` used cross-validation to ensure our model was trained on various splits of the training data which improved its generalization and prediction on the testing data.
